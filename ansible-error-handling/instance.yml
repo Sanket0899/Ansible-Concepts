@@ -1,0 +1,22 @@
+- name: Start two instance using loop
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Start an instance with a public IP address
+      amazon.aws.ec2_instance:
+        name: "{{ item.name }}"
+        key_name: "my-key"
+        # vpc_subnet_id: subnet-013744e41e8088axx
+        instance_type: t2.micro
+        security_group: test-group
+        region: ap-south-1
+        # aws_access_key: <secret> com
+        # aws_secret_key: <secret> commenting out but these should be mentioned
+        network:
+          assign_public_ip: true
+        image_id: "{{ item.image }}"
+        tags:
+          Environment: "{{ item.name }}"
+      loop:
+        - {image: "ami-0f918f7e67a3323f0", name: "ubuntu-linux-1"}
+        - {image: "ami-0f918f7e67a3323f0", name: "ubuntu-linux-2"}
